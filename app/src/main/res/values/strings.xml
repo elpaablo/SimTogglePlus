@@ -1,0 +1,8 @@
+<resources>
+    <string name="app_name">SimTogglePlus</string>
+    <string name="qs_dialog_cancel">Cancel</string>
+	<string name="dialog_title">CURRENT LIMIT</string>
+	<string name="bConfirm">Confirm</string>
+	<string name="bCancel">Cancel</string>
+	<string name="default_progress">1000 mA</string>
+</resources>

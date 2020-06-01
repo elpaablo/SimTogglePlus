@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layer-list xmlns:android="http://schemas.android.com/apk/res/android">
+    <item android:id="@android:id/progress"
+        android:top="2dp" android:bottom="3dp" android:start="19dp" android:end="26dp">
+        <scale android:scaleWidth="100%" >
+            <selector>
+                <item>
+                    <shape android:shape="rectangle"
+                        android:tint="@color/colorProgressBar">
+                        <corners android:bottomLeftRadius="4dp"
+                            android:topLeftRadius="4dp"
+                            android:topRightRadius="1dp"
+                            android:bottomRightRadius="1dp"/>
+                        <size android:height="60dp"/>
+                    <solid android:color="@color/colorProgressBar" />
+                    </shape>
+                </item>
+            </selector>
+        </scale>
+    </item>
+</layer-list>

@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layer-list xmlns:android="http://schemas.android.com/apk/res/android">
+    <item android:id="@android:id/background"
+        android:top="2dp" android:bottom="2dp" android:start="2dp" android:end="2dp">
+
+        <selector>
+            <item>
+                <bitmap android:src="@mipmap/red_dot"/>
+            </item>
+        </selector>
+
+    </item>
+</layer-list>

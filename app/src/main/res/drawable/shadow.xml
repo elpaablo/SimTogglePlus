@@ -19,7 +19,7 @@
                 android:centerColor="@color/gradient_center"
                 android:endColor="@color/gradient_end"
                 android:type="linear"/>
-            <solid android:color="#88000000"/>
+            <solid android:color="#BF000000"/>
         </shape>
     </item>
 </layer-list>

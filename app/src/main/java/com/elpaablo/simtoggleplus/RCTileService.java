@@ -11,6 +11,7 @@ public class RCTileService extends TileService  {
 
     private static final String TAG = "ChargingLimiter.ToggleChargeLimiter";
     private static final String PATH_TO_RESTRICTED_CHARGING = "/sys/class/qcom-battery/restricted_charging";
+    //private static final String PATH_TO_RESTRICTED_CHARGING = "/sys/class/qcom-battery/restrict_chg";
     private static final String CMD_ENABLE_RESTRICTED_CHARGING = "echo 1 > " + PATH_TO_RESTRICTED_CHARGING;
     private static final String CMD_DISABLE_RESTRICTED_CHARGING = "echo 0 > " + PATH_TO_RESTRICTED_CHARGING;
     private static final char ENABLED = '1';
@@ -27,21 +28,35 @@ public class RCTileService extends TileService  {
         context = getApplicationContext();
         Tile tile = getQsTile();
         ArrayList<String> commands = new ArrayList<>();
-        char state = IOUtils.readFromFile(context, PATH_TO_RESTRICTED_CHARGING).charAt(0);
+        String s = IOUtils.readFromFile(context, PATH_TO_RESTRICTED_CHARGING);
+        if("".equals(s)){
+            updateTileState(Tile.STATE_UNAVAILABLE, tile);
+            return;
+        }
+
+        char state = s.charAt(0);
         switch (state) {
             case ENABLED:
-                //if (RootUtils.canRunRootCommands()) {
-                    commands.add(CMD_DISABLE_RESTRICTED_CHARGING);
-                    RootUtils.execute(commands);
-                    updateTileState(Tile.STATE_INACTIVE, tile);
-                //}
+
+                /****** root method ******/
+                commands.add(CMD_DISABLE_RESTRICTED_CHARGING);
+                RootUtils.execute(commands);
+
+                /****** no root method. depends on changing restricted charging node
+                 ****** ownership to system and/or give it write permission ******/
+                //IOUtils.writeToFile(context, PATH_TO_RESTRICTED_CHARGING, "0");
+                updateTileState(Tile.STATE_INACTIVE, tile);
+
                 break;
             case DISABLED:
-                //if (RootUtils.canRunRootCommands()) {
-                    commands.add(CMD_ENABLE_RESTRICTED_CHARGING);
-                    RootUtils.execute(commands);
-                    updateTileState(Tile.STATE_INACTIVE, tile);
-                //}
+
+                /****** root method ******/
+                commands.add(CMD_ENABLE_RESTRICTED_CHARGING);
+                RootUtils.execute(commands);
+
+                /****** no root method. depends on changing restricted charging node
+                 ****** ownership to system and/or give it write permission ******/
+                //IOUtils.writeToFile(context, PATH_TO_RESTRICTED_CHARGING, "1");
                 updateTileState(Tile.STATE_ACTIVE, tile);
                 break;
             default:
@@ -60,7 +75,11 @@ public class RCTileService extends TileService  {
     public void onTileAdded() {
         super.onTileAdded();
         Tile tile = getQsTile();
-        updateTileState(getNewTileState(IOUtils.readFromFile(getApplicationContext(), PATH_TO_RESTRICTED_CHARGING), tile), tile);
+        String state = IOUtils.readFromFile(getApplicationContext(), PATH_TO_RESTRICTED_CHARGING);
+        if("".equals(state))
+            updateTileState(Tile.STATE_UNAVAILABLE, tile);
+        else
+            updateTileState(getNewTileState(state, tile), tile);
     }
 
     /**
@@ -72,7 +91,11 @@ public class RCTileService extends TileService  {
     public void onStartListening() {
         super.onStartListening();
         Tile tile = getQsTile();
-        updateTileState(getNewTileState(IOUtils.readFromFile(getApplicationContext(), PATH_TO_RESTRICTED_CHARGING), tile), tile);
+        String state = IOUtils.readFromFile(getApplicationContext(), PATH_TO_RESTRICTED_CHARGING);
+        if("".equals(state))
+            updateTileState(Tile.STATE_UNAVAILABLE, tile);
+        else
+            updateTileState(getNewTileState(state, tile), tile);
     }
 
     private int getNewTileState(String restrictedCharging, Tile tile) {

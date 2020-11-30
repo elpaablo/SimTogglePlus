@@ -1,8 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
-    package="com.elpaablo.simtoggleplus"
-    >
+    package="com.elpaablo.simtoggleplus" >
+   <!-- android:sharedUserId="android.uid.system" -->
+
 
     <!--uses-permission android:name="android.permission.android.permission.INSTALL_PACKAGES" /-->
     <uses-permission android:name="android.permission.READ_PHONE_STATE" />
@@ -83,7 +84,6 @@
             <intent-filter>
                 <action android:name="android.service.quicksettings.action.QS_TILE" />
             </intent-filter>
-            <!--meta-data android:name="android.service.quicksettings.ACTIVE_TILE" android:value="true" /-->
         </service>
         <service
             android:name="com.elpaablo.simtoggleplus.ADBTileService"
@@ -93,7 +93,6 @@
             <intent-filter>
                 <action android:name="android.service.quicksettings.action.QS_TILE" />
             </intent-filter>
-            <!--meta-data android:name="android.service.quicksettings.ACTIVE_TILE" android:value="true" /-->
         </service>
         <service
             android:name="com.elpaablo.simtoggleplus.RCTileService"
@@ -103,8 +102,6 @@
             <intent-filter>
                 <action android:name="android.service.quicksettings.action.QS_TILE" />
             </intent-filter>
-            <!--meta-data android:name="android.service.quicksettings.ACTIVE_TILE" android:value="true" /-->
         </service>
     </application>
-
 </manifest>

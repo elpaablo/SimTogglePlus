@@ -14,8 +14,10 @@ import android.os.Bundle;
 import android.provider.Settings;
 import android.util.DisplayMetrics;
 import android.view.Gravity;
+import android.view.LayoutInflater;
 import android.view.MotionEvent;
 import android.view.View;
+import android.view.ViewGroup;
 import android.view.Window;
 import android.view.WindowManager;
 import android.widget.Button;
@@ -31,6 +33,7 @@ public class RCDialog extends Activity implements View.OnTouchListener{
     private static String TAG = "ChargingLimiter.RCDialog";
 
     private static final String PATH_TO_RESTRICTED_CURRENT = "/sys/class/qcom-battery/restricted_current";
+    //private static final String PATH_TO_RESTRICTED_CURRENT = "/sys/class/qcom-battery/restrict_cur";
 
     private float dX;
     private float dY;
@@ -39,12 +42,14 @@ public class RCDialog extends Activity implements View.OnTouchListener{
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.qs_dialog);
+        LayoutInflater inflater = LayoutInflater.from(this);
+        View v =  inflater.inflate(R.layout.qs_dialog,null, false);
+        setContentView(v);
         Intent intent = getIntent();
         String action = intent.getAction();
         if (Objects.equals(action, "android.service.quicksettings.action.QS_TILE_PREFERENCES")) {
             Bundle bundle = intent.getExtras();
-            String msg = "nadinha";
+            String msg = "no extras";
             if (bundle != null) {
                 try {
                     msg = bundle.get("android.intent.extra.COMPONENT_NAME").toString();
@@ -71,6 +76,11 @@ public class RCDialog extends Activity implements View.OnTouchListener{
             dialog.setCancelable(false);
             dialog.setCanceledOnTouchOutside(false);
             dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
+
+            if(v.getParent() != null) {
+                ((ViewGroup)v.getParent()).removeView(v); // <- fix
+            }
+            dialog.setContentView(v);
             dialog.show();
 
             if (dialog.getWindow() != null) {
@@ -81,6 +91,10 @@ public class RCDialog extends Activity implements View.OnTouchListener{
                 window.setAttributes(wmlp);
                 window.setBackgroundDrawableResource(R.drawable.shadow);
                 dialog.getWindow().setLayout(800, 500);
+                if(v.getParent() != null) {
+                    ((ViewGroup)v.getParent()).removeView(v); // <- fix
+                }
+                dialog.setContentView(v);
                 dialog.show();
             }
         }
@@ -96,6 +110,12 @@ public class RCDialog extends Activity implements View.OnTouchListener{
     public void onPause() {
         super.onPause();
 
+    }
+
+    @Override
+    public void onDestroy(){
+
+        super.onDestroy();
     }
 
 
@@ -163,6 +183,8 @@ public class RCDialog extends Activity implements View.OnTouchListener{
             }
         };
         seekBar.setOnSeekBarChangeListener(seekBarListener);
+
+        //remove parent from mainLayout to avoid errors
 
         builder.setView(mainLayout);
         final AlertDialog dialog = builder.create();
@@ -259,7 +281,10 @@ public class RCDialog extends Activity implements View.OnTouchListener{
 
 
     private boolean save(String value) {
-        ArrayList<String> commands = new ArrayList<>();
+
+
+        /****** root method ******/
+         ArrayList<String> commands = new ArrayList<>();
         if (RootUtils.canRunRootCommands()) {
             String current = value + "00000";
             String command = "echo " + current + " > " + PATH_TO_RESTRICTED_CURRENT;
@@ -269,6 +294,11 @@ public class RCDialog extends Activity implements View.OnTouchListener{
             return true;
         }
         return false;
+
+        /****** no root method. depends on changing restricted current node
+         ****** ownership to system and/or give it write permission ******/
+       /* String current = value + "00000";
+        return IOUtils.writeToFile(this, PATH_TO_RESTRICTED_CURRENT, current);*/
     }
 
 

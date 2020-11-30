@@ -41,8 +41,8 @@
 
         <Button
             android:id="@+id/bCancel"
-            android:layout_width="20dp"
-            android:layout_height="20dp"
+            android:layout_width="22dp"
+            android:layout_height="22dp"
             android:background="@mipmap/red_dot"
             android:layout_gravity="end"
             android:layout_marginEnd="16dp"
@@ -53,8 +53,8 @@
 
         <Button
             android:id="@+id/bConfirm"
-            android:layout_width="20dp"
-            android:layout_height="20dp"
+            android:layout_width="22dp"
+            android:layout_height="22dp"
             android:layout_gravity="right"
             android:background="@mipmap/green_dot"
             android:layout_marginEnd="46dp"
